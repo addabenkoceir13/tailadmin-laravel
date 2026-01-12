@@ -13,11 +13,11 @@
         @click.prevent="toggleDropdown()"
         type="button"
     >
-        <span class="mr-3 overflow-hidden rounded-full h-11 w-11">
+        <span class="mr-3 rtl:mr-0 rtl:ml-3 overflow-hidden rounded-full h-11 w-11">
             <img src="/images/user/owner.png" alt="User" />
         </span>
 
-       <span class="block mr-1 font-medium text-theme-sm">Musharof</span>
+       <span class="block mr-1 rtl:mr-0 rtl:ml-1 font-medium text-theme-sm">Musharof</span>
 
         <!-- Chevron Icon -->
         <svg
@@ -40,7 +40,7 @@
         x-transition:leave="transition ease-in duration-75"
         x-transition:leave-start="transform opacity-100 scale-100"
         x-transition:leave-end="transform opacity-0 scale-95"
-        class="absolute right-0 mt-[17px] flex w-[260px] flex-col rounded-2xl border border-gray-200 bg-white p-3 shadow-theme-lg dark:border-gray-800 dark:bg-gray-dark z-50"
+        class="absolute right-0 rtl:right-auto rtl:left-0 mt-[17px] flex w-[260px] flex-col rounded-2xl border border-gray-200 bg-white p-3 shadow-theme-lg dark:border-gray-800 dark:bg-gray-dark z-50"
         style="display: none;"
     >
         <!-- User Info -->

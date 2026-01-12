@@ -8,7 +8,7 @@
                         @change="checkboxToggle = !checkboxToggle" />
                     <div :class="checkboxToggle ? 'border-brand-500 bg-brand-500' :
                         'bg-transparent border-gray-300 dark:border-gray-700'"
-                        class="f hover:border-brand-500 dark:hover:border-brand-500 mr-3 flex h-5 w-5 items-center justify-center rounded-md border-[1.25px]">
+                        class="f hover:border-brand-500 dark:hover:border-brand-500 rtl:mr-0 rtl:ml-3  mr-3 flex h-5 w-5 items-center justify-center rounded-md border-[1.25px]">
                         <span :class="checkboxToggle ? '' : 'opacity-0'">
                             <svg width="14" height="14" viewBox="0 0 14 14" fill="none"
                                 xmlns="http://www.w3.org/2000/svg">
@@ -30,7 +30,7 @@
                         @change="checkboxToggle = !checkboxToggle" />
                     <div :class="checkboxToggle ? 'border-brand-500 bg-brand-500' :
                         'bg-transparent border-gray-300 dark:border-gray-700'"
-                        class="hover:border-brand-500 dark:hover:border-brand-500 mr-3 flex h-5 w-5 items-center justify-center rounded-md border-[1.25px]">
+                        class="hover:border-brand-500 dark:hover:border-brand-500 rtl:mr-0 rtl:ml-3 mr-3 flex h-5 w-5 items-center justify-center rounded-md border-[1.25px]">
                         <span :class="checkboxToggle ? '' : 'opacity-0'">
                             <svg width="14" height="14" viewBox="0 0 14 14" fill="none"
                                 xmlns="http://www.w3.org/2000/svg">
@@ -46,7 +46,7 @@
 
         <div x-data="{ checkboxToggle: true }">
             <label for="checkboxLabelThree"
-                class="flex cursor-pointer items-center text-sm font-medium text-gray-300 select-none dark:text-gray-700">
+                class="flex cursor-pointer items-center text-sm rtl:mr-0 rtl:ml-3 font-medium text-gray-300 select-none dark:text-gray-700">
                 <div class="relative">
                     <input type="checkbox" id="checkboxLabelThree" class="peer sr-only"
                         @change="checkboxToggle = !checkboxToggle" disabled />
