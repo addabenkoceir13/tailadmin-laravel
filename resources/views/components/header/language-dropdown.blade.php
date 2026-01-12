@@ -1,4 +1,4 @@
-<div class="relative" x-data="{ languageOpen: false, activeLanguage: 'EN' }" @click.away="languageOpen = false">
+<div class="relative" x-data="{ languageOpen: false, activeLanguage: '{{ strtoupper(app()->getLocale()) }}' }" @click.away="languageOpen = false">
     <button
         class="inline-flex items-center gap-2 rounded-full border border-gray-200 bg-white px-3 py-2 text-sm font-medium text-gray-700 shadow-theme-xs transition hover:bg-gray-50 dark:border-gray-800 dark:bg-gray-900 dark:text-gray-300 dark:hover:bg-gray-800"
         @click="languageOpen = !languageOpen" type="button" aria-label="Select language">
@@ -21,23 +21,23 @@
         x-transition:leave-end="transform opacity-0 scale-95"
         class="absolute right-0 rtl:right-auto rtl:left-0 mt-2 w-28 rounded-xl border border-gray-200 bg-white p-2 text-sm shadow-theme-lg dark:border-gray-800 dark:bg-gray-dark"
         style="display: none;">
-        <a href="{{ route('language.switch', 'en') }}"
-            class="flex w-full items-center justify-between rounded-lg px-3 py-2 text-gray-600 hover:bg-gray-100 hover:text-gray-700 dark:text-gray-300 dark:hover:bg-white/5"
-            @click="activeLanguage = 'EN'; languageOpen = false">
-            <span>English</span>
+        <a href="{{ route('language.switch', 'en') }}" @click="activeLanguage = 'EN'; languageOpen = false"
+            class="flex w-full items-center justify-between rounded-lg px-3 py-2">
+            <span class="text-gray-900 dark:text-gray-300">English</span>
             <span class="text-xs text-gray-400">EN</span>
         </a>
-        <a href="{{ route('language.switch', 'fr') }}"
-            class="flex w-full items-center justify-between rounded-lg px-3 py-2 text-gray-600 hover:bg-gray-100 hover:text-gray-700 dark:text-gray-300 dark:hover:bg-white/5"
-            @click="activeLanguage = 'FR'; languageOpen = false">
-            <span>Français</span>
+
+        <a href="{{ route('language.switch', 'fr') }}" @click="activeLanguage = 'FR'; languageOpen = false"
+            class="flex w-full items-center justify-between rounded-lg px-3 py-2">
+            <span class="text-gray-900 dark:text-gray-300">Français</span>
             <span class="text-xs text-gray-400">FR</span>
         </a>
-        <a href="{{ route('language.switch', 'ar') }}"
-            class="flex w-full items-center justify-between rounded-lg px-3 py-2 text-gray-600 hover:bg-gray-100 hover:text-gray-700 dark:text-gray-300 dark:hover:bg-white/5"
-            @click="activeLanguage = 'AR'; languageOpen = false">
-            <span>العربية</span>
+
+        <a href="{{ route('language.switch', 'ar') }}" @click="activeLanguage = 'AR'; languageOpen = false"
+            class="flex w-full items-center justify-between rounded-lg px-3 py-2">
+            <span class="text-gray-900 dark:text-gray-300">العربية</span>
             <span class="text-xs text-gray-400">AR</span>
         </a>
+
     </div>
 </div>
