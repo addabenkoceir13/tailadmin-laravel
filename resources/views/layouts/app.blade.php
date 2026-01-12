@@ -1,5 +1,10 @@
+@php
+    $locale = str_replace('_', '-', app()->getLocale());
+    $isRtl = str_starts_with($locale, 'ar');
+@endphp
+
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="h-full">
+<html lang="{{ $locale }}" dir="{{ $isRtl ? 'rtl' : 'ltr' }}" class="h-full">
 
 <head>
     <meta charset="utf-8">
@@ -117,9 +122,9 @@
 
         <div class="flex-1 transition-all duration-300 ease-in-out"
             :class="{
-                'xl:ml-[290px]': $store.sidebar.isExpanded || $store.sidebar.isHovered,
-                'xl:ml-[90px]': !$store.sidebar.isExpanded && !$store.sidebar.isHovered,
-                'ml-0': $store.sidebar.isMobileOpen
+                'xl:ml-[290px] rtl:xl:ml-0 rtl:xl:mr-[290px]': $store.sidebar.isExpanded || $store.sidebar.isHovered,
+                'xl:ml-[90px] rtl:xl:ml-0 rtl:xl:mr-[90px]': !$store.sidebar.isExpanded && !$store.sidebar.isHovered,
+                'ml-0 rtl:mr-0': $store.sidebar.isMobileOpen
             }">
             <!-- app header start -->
             @include('layouts.app-header')

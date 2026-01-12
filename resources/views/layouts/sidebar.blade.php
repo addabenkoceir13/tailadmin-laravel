@@ -1,49 +1,62 @@
-
 @php
-    use App\Helpers\MenuHelper;
-    $menuGroups = MenuHelper::getMenuGroups();
+    use App\Helpers\IconsHelper;
 
-    // Get current path
     $currentPath = request()->path();
+
+    $dashboardPath = parse_url(route('dashboard'), PHP_URL_PATH);
+    $calendarPath = parse_url(route('calendar'), PHP_URL_PATH);
+    $profilePath = parse_url(route('profile'), PHP_URL_PATH);
+    $formElementsPath = parse_url(route('form-elements'), PHP_URL_PATH);
+    $basicTablesPath = parse_url(route('basic-tables'), PHP_URL_PATH);
+    $blankPath = parse_url(route('blank'), PHP_URL_PATH);
+    $errorPath = parse_url(route('error-404'), PHP_URL_PATH);
+    $lineChartPath = parse_url(route('line-chart'), PHP_URL_PATH);
+    $barChartPath = parse_url(route('bar-chart'), PHP_URL_PATH);
+    $alertsPath = parse_url(route('alerts'), PHP_URL_PATH);
+    $avatarsPath = parse_url(route('avatars'), PHP_URL_PATH);
+    $badgesPath = parse_url(route('badges'), PHP_URL_PATH);
+    $buttonsPath = parse_url(route('buttons'), PHP_URL_PATH);
+    $imagesPath = parse_url(route('images'), PHP_URL_PATH);
+    $videosPath = parse_url(route('videos'), PHP_URL_PATH);
+    $signinPath = parse_url(route('signin'), PHP_URL_PATH);
+    $signupPath = parse_url(route('signup'), PHP_URL_PATH);
 @endphp
 
 <aside id="sidebar"
-    class="fixed flex flex-col mt-0 top-0 px-5 left-0 bg-white dark:bg-gray-900 dark:border-gray-800 text-gray-900 h-screen transition-all duration-300 ease-in-out z-99999 border-r border-gray-200"
+    class="fixed flex flex-col mt-0 top-0 px-5 left-0 rtl:left-auto rtl:right-0 bg-white dark:bg-gray-900 dark:border-gray-800 text-gray-900 h-screen transition-all duration-300 ease-in-out z-99999 border-r border-gray-200 rtl:border-r-0 rtl:border-l"
     x-data="{
         openSubmenus: {},
         init() {
-            // Auto-open Dashboard menu on page load
             this.initializeActiveMenus();
         },
         initializeActiveMenus() {
             const currentPath = '{{ $currentPath }}';
-
-            @foreach ($menuGroups as $groupIndex => $menuGroup)
-                @foreach ($menuGroup['items'] as $itemIndex => $item)
-                    @if (isset($item['subItems']))
-                        // Check if any submenu item matches current path
-                        @foreach ($item['subItems'] as $subItem)
-                            if (currentPath === '{{ ltrim($subItem['path'], '/') }}' ||
-                                window.location.pathname === '{{ $subItem['path'] }}') {
-                                this.openSubmenus['{{ $groupIndex }}-{{ $itemIndex }}'] = true;
-                            } @endforeach
-            @endif
-            @endforeach
-            @endforeach
+            this.openSubmenus = {
+                'menu-dashboard': currentPath === '' || currentPath === '{{ ltrim($dashboardPath, '/') }}' || window.location.pathname === '{{ $dashboardPath }}',
+                'menu-forms': currentPath === '{{ ltrim($formElementsPath, '/') }}' || window.location.pathname === '{{ $formElementsPath }}',
+                'menu-tables': currentPath === '{{ ltrim($basicTablesPath, '/') }}' || window.location.pathname === '{{ $basicTablesPath }}',
+                'menu-pages': currentPath === '{{ ltrim($blankPath, '/') }}' || currentPath === '{{ ltrim($errorPath, '/') }}' ||
+                    window.location.pathname === '{{ $blankPath }}' || window.location.pathname === '{{ $errorPath }}',
+                'menu-charts': currentPath === '{{ ltrim($lineChartPath, '/') }}' || currentPath === '{{ ltrim($barChartPath, '/') }}' ||
+                    window.location.pathname === '{{ $lineChartPath }}' || window.location.pathname === '{{ $barChartPath }}',
+                'menu-ui': currentPath === '{{ ltrim($alertsPath, '/') }}' || currentPath === '{{ ltrim($avatarsPath, '/') }}' ||
+                    currentPath === '{{ ltrim($badgesPath, '/') }}' || currentPath === '{{ ltrim($buttonsPath, '/') }}' ||
+                    currentPath === '{{ ltrim($imagesPath, '/') }}' || currentPath === '{{ ltrim($videosPath, '/') }}' ||
+                    window.location.pathname === '{{ $alertsPath }}' || window.location.pathname === '{{ $avatarsPath }}' ||
+                    window.location.pathname === '{{ $badgesPath }}' || window.location.pathname === '{{ $buttonsPath }}' ||
+                    window.location.pathname === '{{ $imagesPath }}' || window.location.pathname === '{{ $videosPath }}',
+                'menu-auth': currentPath === '{{ ltrim($signinPath, '/') }}' || currentPath === '{{ ltrim($signupPath, '/') }}' ||
+                    window.location.pathname === '{{ $signinPath }}' || window.location.pathname === '{{ $signupPath }}'
+            };
         },
-        toggleSubmenu(groupIndex, itemIndex) {
-            const key = groupIndex + '-' + itemIndex;
+        toggleSubmenu(key) {
             const newState = !this.openSubmenus[key];
-
-            // Close all other submenus when opening a new one
             if (newState) {
                 this.openSubmenus = {};
             }
-
             this.openSubmenus[key] = newState;
         },
-        isSubmenuOpen(groupIndex, itemIndex) {
-            const key = groupIndex + '-' + itemIndex;
+        isSubmenuOpen(key) {
             return this.openSubmenus[key] || false;
         },
         isActive(path) {
@@ -54,7 +67,7 @@
         'w-[290px]': $store.sidebar.isExpanded || $store.sidebar.isMobileOpen || $store.sidebar.isHovered,
         'w-[90px]': !$store.sidebar.isExpanded && !$store.sidebar.isHovered,
         'translate-x-0': $store.sidebar.isMobileOpen,
-        '-translate-x-full xl:translate-x-0': !$store.sidebar.isMobileOpen
+        '-translate-x-full xl:translate-x-0 rtl:translate-x-full rtl:xl:translate-x-0': !$store.sidebar.isMobileOpen
     }"
     @mouseenter="if (!$store.sidebar.isExpanded) $store.sidebar.setHovered(true)"
     @mouseleave="$store.sidebar.setHovered(false)">
@@ -63,7 +76,7 @@
         :class="(!$store.sidebar.isExpanded && !$store.sidebar.isHovered && !$store.sidebar.isMobileOpen) ?
         'xl:justify-center' :
         'justify-start'">
-        <a href="/">
+        <a href="{{ route('dashboard') }}">
             <img x-show="$store.sidebar.isExpanded || $store.sidebar.isHovered || $store.sidebar.isMobileOpen"
                 class="dark:hidden" src="/images/logo/logo.svg" alt="Logo" width="150" height="40" />
             <img x-show="$store.sidebar.isExpanded || $store.sidebar.isHovered || $store.sidebar.isMobileOpen"
@@ -71,7 +84,6 @@
                 height="40" />
             <img x-show="!$store.sidebar.isExpanded && !$store.sidebar.isHovered && !$store.sidebar.isMobileOpen"
                 src="/images/logo/logo-icon.svg" alt="Logo" width="32" height="32" />
-
         </a>
     </div>
 
@@ -79,141 +91,300 @@
     <div class="flex flex-col overflow-y-auto duration-300 ease-linear no-scrollbar">
         <nav class="mb-6">
             <div class="flex flex-col gap-4">
-                @foreach ($menuGroups as $groupIndex => $menuGroup)
-                    <div>
-                        <!-- Menu Group Title -->
-                        <h2 class="mb-4 text-xs uppercase flex leading-[20px] text-gray-400"
-                            :class="(!$store.sidebar.isExpanded && !$store.sidebar.isHovered && !$store.sidebar.isMobileOpen) ?
-                            'lg:justify-center' : 'justify-start'">
-                            <template
-                                x-if="$store.sidebar.isExpanded || $store.sidebar.isHovered || $store.sidebar.isMobileOpen">
-                                <span>{{ $menuGroup['title'] }}</span>
-                            </template>
-                            <template x-if="!$store.sidebar.isExpanded && !$store.sidebar.isHovered && !$store.sidebar.isMobileOpen">
-                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                  <path fill-rule="evenodd" clip-rule="evenodd" d="M5.99915 10.2451C6.96564 10.2451 7.74915 11.0286 7.74915 11.9951V12.0051C7.74915 12.9716 6.96564 13.7551 5.99915 13.7551C5.03265 13.7551 4.24915 12.9716 4.24915 12.0051V11.9951C4.24915 11.0286 5.03265 10.2451 5.99915 10.2451ZM17.9991 10.2451C18.9656 10.2451 19.7491 11.0286 19.7491 11.9951V12.0051C19.7491 12.9716 18.9656 13.7551 17.9991 13.7551C17.0326 13.7551 16.2491 12.9716 16.2491 12.0051V11.9951C16.2491 11.0286 17.0326 10.2451 17.9991 10.2451ZM13.7491 11.9951C13.7491 11.0286 12.9656 10.2451 11.9991 10.2451C11.0326 10.2451 10.2491 11.0286 10.2491 11.9951V12.0051C10.2491 12.9716 11.0326 13.7551 11.9991 13.7551C12.9656 13.7551 13.7491 12.9716 13.7491 12.0051V11.9951Z" fill="currentColor"/>
-                                </svg>
-                            </template>
-                        </h2>
+                <div>
+                    <!-- Menu Group Title -->
+                    <h2 class="mb-4 text-xs uppercase flex leading-[20px] text-gray-400"
+                        :class="(!$store.sidebar.isExpanded && !$store.sidebar.isHovered && !$store.sidebar.isMobileOpen) ?
+                        'lg:justify-center' : 'justify-start'">
+                        <template
+                            x-if="$store.sidebar.isExpanded || $store.sidebar.isHovered || $store.sidebar.isMobileOpen">
+                            <span>Menu</span>
+                        </template>
+                        <template x-if="!$store.sidebar.isExpanded && !$store.sidebar.isHovered && !$store.sidebar.isMobileOpen">
+                            {!! IconsHelper::icon('dots-horizontal') !!}
+                        </template>
+                    </h2>
 
-                        <!-- Menu Items -->
-                        <ul class="flex flex-col gap-1">
-                            @foreach ($menuGroup['items'] as $itemIndex => $item)
-                                <li>
-                                    @if (isset($item['subItems']))
-                                        <!-- Menu Item with Submenu -->
-                                        <button @click="toggleSubmenu({{ $groupIndex }}, {{ $itemIndex }})"
-                                            class="menu-item group w-full"
-                                            :class="[
-                                                isSubmenuOpen({{ $groupIndex }}, {{ $itemIndex }}) ?
-                                                'menu-item-active' : 'menu-item-inactive',
-                                                !$store.sidebar.isExpanded && !$store.sidebar.isHovered ?
-                                                'xl:justify-center' : 'xl:justify-start'
-                                            ]">
-
-                                            <!-- Icon -->
-                                            <span :class="isSubmenuOpen({{ $groupIndex }}, {{ $itemIndex }}) ?
-                                                    'menu-item-icon-active' : 'menu-item-icon-inactive'">
-                                                {!! MenuHelper::getIconSvg($item['icon']) !!}
-                                            </span>
-
-                                            <!-- Text -->
-                                            <span
-                                                x-show="$store.sidebar.isExpanded || $store.sidebar.isHovered || $store.sidebar.isMobileOpen"
-                                                class="menu-item-text flex items-center gap-2">
-                                                {{ $item['name'] }}
-                                                @if (!empty($item['new']))
-                                                    <span class="absolute right-10"
-                                                        :class="isActive('{{ $item['path'] ?? '' }}') ?
-                                                            'menu-dropdown-badge menu-dropdown-badge-active' :
-                                                            'menu-dropdown-badge menu-dropdown-badge-inactive'">
-                                                        new
-                                                    </span>
-                                                @endif
-                                            </span>
-
-                                            <!-- Chevron Down Icon -->
-                                            <svg x-show="$store.sidebar.isExpanded || $store.sidebar.isHovered || $store.sidebar.isMobileOpen"
-                                                class="ml-auto w-5 h-5 transition-transform duration-200"
-                                                :class="{
-                                                    'rotate-180 text-brand-500': isSubmenuOpen({{ $groupIndex }},
-                                                        {{ $itemIndex }})
-                                                }"
-                                                fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-                                            </svg>
-                                        </button>
-
-                                        <!-- Submenu -->
-                                        <div x-show="isSubmenuOpen({{ $groupIndex }}, {{ $itemIndex }}) && ($store.sidebar.isExpanded || $store.sidebar.isHovered || $store.sidebar.isMobileOpen)">
-                                            <ul class="mt-2 space-y-1 ml-9">
-                                                @foreach ($item['subItems'] as $subItem)
-                                                    <li>
-                                                        <a href="{{ $subItem['path'] }}" class="menu-dropdown-item"
-                                                            :class="isActive('{{ $subItem['path'] }}') ?
-                                                                'menu-dropdown-item-active' :
-                                                                'menu-dropdown-item-inactive'">
-                                                            {{ $subItem['name'] }}
-                                                            <span class="flex items-center gap-1 ml-auto">
-                                                                @if (!empty($subItem['new']))
-                                                                    <span
-                                                                        :class="isActive('{{ $subItem['path'] }}') ?
-                                                                            'menu-dropdown-badge menu-dropdown-badge-active' :
-                                                                            'menu-dropdown-badge menu-dropdown-badge-inactive'">
-                                                                        new
-                                                                    </span>
-                                                                @endif
-                                                                @if (!empty($subItem['pro']))
-                                                                    <span
-                                                                        :class="isActive('{{ $subItem['path'] }}') ?
-                                                                            'menu-dropdown-badge-pro menu-dropdown-badge-pro-active' :
-                                                                            'menu-dropdown-badge-pro menu-dropdown-badge-pro-inactive'">
-                                                                        pro
-                                                                    </span>
-                                                                @endif
-                                                            </span>
-                                                        </a>
-                                                    </li>
-                                                @endforeach
-                                            </ul>
-                                        </div>
-                                    @else
-                                        <!-- Simple Menu Item -->
-                                        <a href="{{ $item['path'] }}" class="menu-item group"
-                                            :class="[
-                                                isActive('{{ $item['path'] }}') ? 'menu-item-active' :
-                                                'menu-item-inactive',
-                                                (!$store.sidebar.isExpanded && !$store.sidebar.isHovered && !$store.sidebar.isMobileOpen) ?
-                                                'xl:justify-center' :
-                                                'justify-start'
-                                            ]">
-
-                                            <!-- Icon -->
-                                            <span
-                                                :class="isActive('{{ $item['path'] }}') ? 'menu-item-icon-active' :
-                                                    'menu-item-icon-inactive'">
-                                                {!! MenuHelper::getIconSvg($item['icon']) !!}
-                                            </span>
-
-                                            <!-- Text -->
-                                            <span
-                                                x-show="$store.sidebar.isExpanded || $store.sidebar.isHovered || $store.sidebar.isMobileOpen"
-                                                class="menu-item-text flex items-center gap-2">
-                                                {{ $item['name'] }}
-                                                @if (!empty($item['new']))
-                                                    <span
-                                                        class="ml-2 inline-flex items-center px-2 py-0.5 rounded text-xs font-semibold bg-brand-500 text-white">
-                                                        new
-                                                    </span>
-                                                @endif
-                                            </span>
+                    <!-- Menu Items -->
+                    <ul class="flex flex-col gap-1">
+                        <li>
+                            <button @click="toggleSubmenu('menu-dashboard')"
+                                class="menu-item group w-full"
+                                :class="[
+                                    isSubmenuOpen('menu-dashboard') ? 'menu-item-active' : 'menu-item-inactive',
+                                    !$store.sidebar.isExpanded && !$store.sidebar.isHovered ? 'xl:justify-center' : 'xl:justify-start'
+                                ]">
+                                <span :class="isSubmenuOpen('menu-dashboard') ? 'menu-item-icon-active' : 'menu-item-icon-inactive'">
+                                    {!! IconsHelper::icon('dashboard') !!}
+                                </span>
+                                <span x-show="$store.sidebar.isExpanded || $store.sidebar.isHovered || $store.sidebar.isMobileOpen"
+                                    class="menu-item-text flex items-center gap-2">
+                                    Dashboard
+                                </span>
+                                <span x-show="$store.sidebar.isExpanded || $store.sidebar.isHovered || $store.sidebar.isMobileOpen"
+                                    class="ml-auto rtl:ml-0 rtl:mr-auto w-5 h-5 transition-transform duration-200"
+                                    :class="{ 'rotate-180 text-brand-500': isSubmenuOpen('menu-dashboard') }">
+                                    {!! IconsHelper::icon('chevron-down', 'w-5 h-5') !!}
+                                </span>
+                            </button>
+                            <div x-show="isSubmenuOpen('menu-dashboard') && ($store.sidebar.isExpanded || $store.sidebar.isHovered || $store.sidebar.isMobileOpen)">
+                                <ul class="mt-2 space-y-1 ml-9 rtl:ml-0 rtl:mr-9">
+                                    <li>
+                                        <a href="{{ route('dashboard') }}" class="menu-dropdown-item"
+                                            :class="isActive('{{ $dashboardPath }}') ? 'menu-dropdown-item-active' : 'menu-dropdown-item-inactive'">
+                                            Ecommerce
                                         </a>
-                                    @endif
-                                </li>
-                            @endforeach
-                        </ul>
-                    </div>
-                @endforeach
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li>
+                            <a href="{{ route('calendar') }}" class="menu-item group"
+                                :class="[isActive('{{ $calendarPath }}') ? 'menu-item-active' : 'menu-item-inactive', (!$store.sidebar.isExpanded && !$store.sidebar.isHovered && !$store.sidebar.isMobileOpen) ? 'xl:justify-center' : 'justify-start']">
+                                <span :class="isActive('{{ $calendarPath }}') ? 'menu-item-icon-active' : 'menu-item-icon-inactive'">
+                                    {!! IconsHelper::icon('calendar') !!}
+                                </span>
+                                <span x-show="$store.sidebar.isExpanded || $store.sidebar.isHovered || $store.sidebar.isMobileOpen" class="menu-item-text flex items-center gap-2">
+                                    Calendar
+                                </span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ route('profile') }}" class="menu-item group"
+                                :class="[isActive('{{ $profilePath }}') ? 'menu-item-active' : 'menu-item-inactive', (!$store.sidebar.isExpanded && !$store.sidebar.isHovered && !$store.sidebar.isMobileOpen) ? 'xl:justify-center' : 'justify-start']">
+                                <span :class="isActive('{{ $profilePath }}') ? 'menu-item-icon-active' : 'menu-item-icon-inactive'">
+                                    {!! IconsHelper::icon('user-profile') !!}
+                                </span>
+                                <span x-show="$store.sidebar.isExpanded || $store.sidebar.isHovered || $store.sidebar.isMobileOpen" class="menu-item-text flex items-center gap-2">
+                                    User Profile
+                                </span>
+                            </a>
+                        </li>
+                        <li>
+                            <button @click="toggleSubmenu('menu-forms')" class="menu-item group w-full"
+                                :class="[isSubmenuOpen('menu-forms') ? 'menu-item-active' : 'menu-item-inactive', !$store.sidebar.isExpanded && !$store.sidebar.isHovered ? 'xl:justify-center' : 'xl:justify-start']">
+                                <span :class="isSubmenuOpen('menu-forms') ? 'menu-item-icon-active' : 'menu-item-icon-inactive'">
+                                    {!! IconsHelper::icon('forms') !!}
+                                </span>
+                                <span x-show="$store.sidebar.isExpanded || $store.sidebar.isHovered || $store.sidebar.isMobileOpen" class="menu-item-text flex items-center gap-2">
+                                    Forms
+                                </span>
+                                <span x-show="$store.sidebar.isExpanded || $store.sidebar.isHovered || $store.sidebar.isMobileOpen"
+                                    class="ml-auto rtl:ml-0 rtl:mr-auto w-5 h-5 transition-transform duration-200"
+                                    :class="{ 'rotate-180 text-brand-500': isSubmenuOpen('menu-forms') }">
+                                    {!! IconsHelper::icon('chevron-down', 'w-5 h-5') !!}
+                                </span>
+                            </button>
+                            <div x-show="isSubmenuOpen('menu-forms') && ($store.sidebar.isExpanded || $store.sidebar.isHovered || $store.sidebar.isMobileOpen)">
+                                <ul class="mt-2 space-y-1 ml-9 rtl:ml-0 rtl:mr-9">
+                                    <li>
+                                        <a href="{{ route('form-elements') }}" class="menu-dropdown-item"
+                                            :class="isActive('{{ $formElementsPath }}') ? 'menu-dropdown-item-active' : 'menu-dropdown-item-inactive'">
+                                            Form Elements
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li>
+                            <button @click="toggleSubmenu('menu-tables')" class="menu-item group w-full"
+                                :class="[isSubmenuOpen('menu-tables') ? 'menu-item-active' : 'menu-item-inactive', !$store.sidebar.isExpanded && !$store.sidebar.isHovered ? 'xl:justify-center' : 'xl:justify-start']">
+                                <span :class="isSubmenuOpen('menu-tables') ? 'menu-item-icon-active' : 'menu-item-icon-inactive'">
+                                    {!! IconsHelper::icon('tables') !!}
+                                </span>
+                                <span x-show="$store.sidebar.isExpanded || $store.sidebar.isHovered || $store.sidebar.isMobileOpen" class="menu-item-text flex items-center gap-2">
+                                    Tables
+                                </span>
+                                <span x-show="$store.sidebar.isExpanded || $store.sidebar.isHovered || $store.sidebar.isMobileOpen"
+                                    class="ml-auto rtl:ml-0 rtl:mr-auto w-5 h-5 transition-transform duration-200"
+                                    :class="{ 'rotate-180 text-brand-500': isSubmenuOpen('menu-tables') }">
+                                    {!! IconsHelper::icon('chevron-down', 'w-5 h-5') !!}
+                                </span>
+                            </button>
+                            <div x-show="isSubmenuOpen('menu-tables') && ($store.sidebar.isExpanded || $store.sidebar.isHovered || $store.sidebar.isMobileOpen)">
+                                <ul class="mt-2 space-y-1 ml-9 rtl:ml-0 rtl:mr-9">
+                                    <li>
+                                        <a href="{{ route('basic-tables') }}" class="menu-dropdown-item"
+                                            :class="isActive('{{ $basicTablesPath }}') ? 'menu-dropdown-item-active' : 'menu-dropdown-item-inactive'">
+                                            Basic Tables
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li>
+                            <button @click="toggleSubmenu('menu-pages')" class="menu-item group w-full"
+                                :class="[isSubmenuOpen('menu-pages') ? 'menu-item-active' : 'menu-item-inactive', !$store.sidebar.isExpanded && !$store.sidebar.isHovered ? 'xl:justify-center' : 'xl:justify-start']">
+                                <span :class="isSubmenuOpen('menu-pages') ? 'menu-item-icon-active' : 'menu-item-icon-inactive'">
+                                    {!! IconsHelper::icon('pages') !!}
+                                </span>
+                                <span x-show="$store.sidebar.isExpanded || $store.sidebar.isHovered || $store.sidebar.isMobileOpen" class="menu-item-text flex items-center gap-2">
+                                    Pages
+                                </span>
+                                <span x-show="$store.sidebar.isExpanded || $store.sidebar.isHovered || $store.sidebar.isMobileOpen"
+                                    class="ml-auto rtl:ml-0 rtl:mr-auto w-5 h-5 transition-transform duration-200"
+                                    :class="{ 'rotate-180 text-brand-500': isSubmenuOpen('menu-pages') }">
+                                    {!! IconsHelper::icon('chevron-down', 'w-5 h-5') !!}
+                                </span>
+                            </button>
+                            <div x-show="isSubmenuOpen('menu-pages') && ($store.sidebar.isExpanded || $store.sidebar.isHovered || $store.sidebar.isMobileOpen)">
+                                <ul class="mt-2 space-y-1 ml-9 rtl:ml-0 rtl:mr-9">
+                                    <li>
+                                        <a href="{{ route('blank') }}" class="menu-dropdown-item"
+                                            :class="isActive('{{ $blankPath }}') ? 'menu-dropdown-item-active' : 'menu-dropdown-item-inactive'">
+                                            Blank Page
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="{{ route('error-404') }}" class="menu-dropdown-item"
+                                            :class="isActive('{{ $errorPath }}') ? 'menu-dropdown-item-active' : 'menu-dropdown-item-inactive'">
+                                            404 Error
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <div>
+                    <!-- Menu Group Title -->
+                    <h2 class="mb-4 text-xs uppercase flex leading-[20px] text-gray-400"
+                        :class="(!$store.sidebar.isExpanded && !$store.sidebar.isHovered && !$store.sidebar.isMobileOpen) ?
+                        'lg:justify-center' : 'justify-start'">
+                        <template
+                            x-if="$store.sidebar.isExpanded || $store.sidebar.isHovered || $store.sidebar.isMobileOpen">
+                            <span>Others</span>
+                        </template>
+                        <template x-if="!$store.sidebar.isExpanded && !$store.sidebar.isHovered && !$store.sidebar.isMobileOpen">
+                            {!! IconsHelper::icon('dots-horizontal') !!}
+                        </template>
+                    </h2>
+
+                    <!-- Menu Items -->
+                    <ul class="flex flex-col gap-1">
+                        <li>
+                            <button @click="toggleSubmenu('menu-charts')" class="menu-item group w-full"
+                                :class="[isSubmenuOpen('menu-charts') ? 'menu-item-active' : 'menu-item-inactive', !$store.sidebar.isExpanded && !$store.sidebar.isHovered ? 'xl:justify-center' : 'xl:justify-start']">
+                                <span :class="isSubmenuOpen('menu-charts') ? 'menu-item-icon-active' : 'menu-item-icon-inactive'">
+                                    {!! IconsHelper::icon('charts') !!}
+                                </span>
+                                <span x-show="$store.sidebar.isExpanded || $store.sidebar.isHovered || $store.sidebar.isMobileOpen" class="menu-item-text flex items-center gap-2">
+                                    Charts
+                                </span>
+                                <span x-show="$store.sidebar.isExpanded || $store.sidebar.isHovered || $store.sidebar.isMobileOpen"
+                                    class="ml-auto rtl:ml-0 rtl:mr-auto w-5 h-5 transition-transform duration-200"
+                                    :class="{ 'rotate-180 text-brand-500': isSubmenuOpen('menu-charts') }">
+                                    {!! IconsHelper::icon('chevron-down', 'w-5 h-5') !!}
+                                </span>
+                            </button>
+                            <div x-show="isSubmenuOpen('menu-charts') && ($store.sidebar.isExpanded || $store.sidebar.isHovered || $store.sidebar.isMobileOpen)">
+                                <ul class="mt-2 space-y-1 ml-9 rtl:ml-0 rtl:mr-9">
+                                    <li>
+                                        <a href="{{ route('line-chart') }}" class="menu-dropdown-item"
+                                            :class="isActive('{{ $lineChartPath }}') ? 'menu-dropdown-item-active' : 'menu-dropdown-item-inactive'">
+                                            Line Chart
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="{{ route('bar-chart') }}" class="menu-dropdown-item"
+                                            :class="isActive('{{ $barChartPath }}') ? 'menu-dropdown-item-active' : 'menu-dropdown-item-inactive'">
+                                            Bar Chart
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li>
+                            <button @click="toggleSubmenu('menu-ui')" class="menu-item group w-full"
+                                :class="[isSubmenuOpen('menu-ui') ? 'menu-item-active' : 'menu-item-inactive', !$store.sidebar.isExpanded && !$store.sidebar.isHovered ? 'xl:justify-center' : 'xl:justify-start']">
+                                <span :class="isSubmenuOpen('menu-ui') ? 'menu-item-icon-active' : 'menu-item-icon-inactive'">
+                                    {!! IconsHelper::icon('ui-elements') !!}
+                                </span>
+                                <span x-show="$store.sidebar.isExpanded || $store.sidebar.isHovered || $store.sidebar.isMobileOpen" class="menu-item-text flex items-center gap-2">
+                                    UI Elements
+                                </span>
+                                <span x-show="$store.sidebar.isExpanded || $store.sidebar.isHovered || $store.sidebar.isMobileOpen"
+                                    class="ml-auto rtl:ml-0 rtl:mr-auto w-5 h-5 transition-transform duration-200"
+                                    :class="{ 'rotate-180 text-brand-500': isSubmenuOpen('menu-ui') }">
+                                    {!! IconsHelper::icon('chevron-down', 'w-5 h-5') !!}
+                                </span>
+                            </button>
+                            <div x-show="isSubmenuOpen('menu-ui') && ($store.sidebar.isExpanded || $store.sidebar.isHovered || $store.sidebar.isMobileOpen)">
+                                <ul class="mt-2 space-y-1 ml-9 rtl:ml-0 rtl:mr-9">
+                                    <li>
+                                        <a href="{{ route('alerts') }}" class="menu-dropdown-item"
+                                            :class="isActive('{{ $alertsPath }}') ? 'menu-dropdown-item-active' : 'menu-dropdown-item-inactive'">
+                                            Alerts
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="{{ route('avatars') }}" class="menu-dropdown-item"
+                                            :class="isActive('{{ $avatarsPath }}') ? 'menu-dropdown-item-active' : 'menu-dropdown-item-inactive'">
+                                            Avatar
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="{{ route('badges') }}" class="menu-dropdown-item"
+                                            :class="isActive('{{ $badgesPath }}') ? 'menu-dropdown-item-active' : 'menu-dropdown-item-inactive'">
+                                            Badge
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="{{ route('buttons') }}" class="menu-dropdown-item"
+                                            :class="isActive('{{ $buttonsPath }}') ? 'menu-dropdown-item-active' : 'menu-dropdown-item-inactive'">
+                                            Buttons
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="{{ route('images') }}" class="menu-dropdown-item"
+                                            :class="isActive('{{ $imagesPath }}') ? 'menu-dropdown-item-active' : 'menu-dropdown-item-inactive'">
+                                            Images
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="{{ route('videos') }}" class="menu-dropdown-item"
+                                            :class="isActive('{{ $videosPath }}') ? 'menu-dropdown-item-active' : 'menu-dropdown-item-inactive'">
+                                            Videos
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li>
+                            <button @click="toggleSubmenu('menu-auth')" class="menu-item group w-full"
+                                :class="[isSubmenuOpen('menu-auth') ? 'menu-item-active' : 'menu-item-inactive', !$store.sidebar.isExpanded && !$store.sidebar.isHovered ? 'xl:justify-center' : 'xl:justify-start']">
+                                <span :class="isSubmenuOpen('menu-auth') ? 'menu-item-icon-active' : 'menu-item-icon-inactive'">
+                                    {!! IconsHelper::icon('authentication') !!}
+                                </span>
+                                <span x-show="$store.sidebar.isExpanded || $store.sidebar.isHovered || $store.sidebar.isMobileOpen" class="menu-item-text flex items-center gap-2">
+                                    Authentication
+                                </span>
+                                <span x-show="$store.sidebar.isExpanded || $store.sidebar.isHovered || $store.sidebar.isMobileOpen"
+                                    class="ml-auto rtl:ml-0 rtl:mr-auto w-5 h-5 transition-transform duration-200"
+                                    :class="{ 'rotate-180 text-brand-500': isSubmenuOpen('menu-auth') }">
+                                    {!! IconsHelper::icon('chevron-down', 'w-5 h-5') !!}
+                                </span>
+                            </button>
+                            <div x-show="isSubmenuOpen('menu-auth') && ($store.sidebar.isExpanded || $store.sidebar.isHovered || $store.sidebar.isMobileOpen)">
+                                <ul class="mt-2 space-y-1 ml-9 rtl:ml-0 rtl:mr-9">
+                                    <li>
+                                        <a href="{{ route('signin') }}" class="menu-dropdown-item"
+                                            :class="isActive('{{ $signinPath }}') ? 'menu-dropdown-item-active' : 'menu-dropdown-item-inactive'">
+                                            Sign In
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="{{ route('signup') }}" class="menu-dropdown-item"
+                                            :class="isActive('{{ $signupPath }}') ? 'menu-dropdown-item-active' : 'menu-dropdown-item-inactive'">
+                                            Sign Up
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
             </div>
         </nav>
 
@@ -221,7 +392,6 @@
         <div x-data x-show="$store.sidebar.isExpanded || $store.sidebar.isHovered || $store.sidebar.isMobileOpen" x-transition class="mt-auto">
             @include('layouts.sidebar-widget')
         </div>
-
     </div>
 </aside>
 
