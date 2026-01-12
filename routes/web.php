@@ -2,9 +2,18 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DashboardController;
+use Illuminate\Support\Facades\Session;
+
+Route::get('/language/{lang}', function ($lang) {
+    if (in_array($lang, ['en', 'fr', 'ar'])) {
+        Session::put('locale', $lang);
+    }
+
+    return redirect()->back();
+})->name('language.switch');
 
 // dashboard pages
-Route::get('/', function () {
+Route::get('/dashboard', function () {
     return view('pages.dashboard.ecommerce', ['title' => 'E-commerce Dashboard']);
 })->name('dashboard');
 
