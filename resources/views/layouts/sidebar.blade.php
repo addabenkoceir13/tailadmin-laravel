@@ -8,7 +8,7 @@
 @endphp
 
 <aside id="sidebar"
-    class="fixed flex flex-col mt-0 top-0 px-5 left-0 bg-white dark:bg-gray-900 dark:border-gray-800 text-gray-900 h-screen transition-all duration-300 ease-in-out z-99999 border-r border-gray-200"
+    class="fixed flex flex-col mt-0 top-0 px-5 left-0 rtl:left-auto rtl:right-0 bg-white dark:bg-gray-900 dark:border-gray-800 text-gray-900 h-screen transition-all duration-300 ease-in-out z-99999 border-r border-gray-200 rtl:border-r-0 rtl:border-l"
     x-data="{
         openSubmenus: {},
         init() {
@@ -54,7 +54,7 @@
         'w-[290px]': $store.sidebar.isExpanded || $store.sidebar.isMobileOpen || $store.sidebar.isHovered,
         'w-[90px]': !$store.sidebar.isExpanded && !$store.sidebar.isHovered,
         'translate-x-0': $store.sidebar.isMobileOpen,
-        '-translate-x-full xl:translate-x-0': !$store.sidebar.isMobileOpen
+        '-translate-x-full xl:translate-x-0 rtl:translate-x-full rtl:xl:translate-x-0': !$store.sidebar.isMobileOpen
     }"
     @mouseenter="if (!$store.sidebar.isExpanded) $store.sidebar.setHovered(true)"
     @mouseleave="$store.sidebar.setHovered(false)">
@@ -123,7 +123,7 @@
                                                 class="menu-item-text flex items-center gap-2">
                                                 {{ $item['name'] }}
                                                 @if (!empty($item['new']))
-                                                    <span class="absolute right-10"
+                                                    <span class="absolute right-10 rtl:right-auto rtl:left-10"
                                                         :class="isActive('{{ $item['path'] ?? '' }}') ?
                                                             'menu-dropdown-badge menu-dropdown-badge-active' :
                                                             'menu-dropdown-badge menu-dropdown-badge-inactive'">
@@ -134,7 +134,7 @@
 
                                             <!-- Chevron Down Icon -->
                                             <svg x-show="$store.sidebar.isExpanded || $store.sidebar.isHovered || $store.sidebar.isMobileOpen"
-                                                class="ml-auto w-5 h-5 transition-transform duration-200"
+                                                class="ml-auto rtl:ml-0 rtl:mr-auto w-5 h-5 transition-transform duration-200"
                                                 :class="{
                                                     'rotate-180 text-brand-500': isSubmenuOpen({{ $groupIndex }},
                                                         {{ $itemIndex }})
@@ -146,7 +146,7 @@
 
                                         <!-- Submenu -->
                                         <div x-show="isSubmenuOpen({{ $groupIndex }}, {{ $itemIndex }}) && ($store.sidebar.isExpanded || $store.sidebar.isHovered || $store.sidebar.isMobileOpen)">
-                                            <ul class="mt-2 space-y-1 ml-9">
+                                            <ul class="mt-2 space-y-1 ml-9 rtl:ml-0 rtl:mr-9">
                                                 @foreach ($item['subItems'] as $subItem)
                                                     <li>
                                                         <a href="{{ $subItem['path'] }}" class="menu-dropdown-item"
@@ -154,7 +154,7 @@
                                                                 'menu-dropdown-item-active' :
                                                                 'menu-dropdown-item-inactive'">
                                                             {{ $subItem['name'] }}
-                                                            <span class="flex items-center gap-1 ml-auto">
+                                                            <span class="flex items-center gap-1 ml-auto rtl:ml-0 rtl:mr-auto">
                                                                 @if (!empty($subItem['new']))
                                                                     <span
                                                                         :class="isActive('{{ $subItem['path'] }}') ?
@@ -202,7 +202,7 @@
                                                 {{ $item['name'] }}
                                                 @if (!empty($item['new']))
                                                     <span
-                                                        class="ml-2 inline-flex items-center px-2 py-0.5 rounded text-xs font-semibold bg-brand-500 text-white">
+                                                        class="ml-2 rtl:ml-0 rtl:mr-2 inline-flex items-center px-2 py-0.5 rounded text-xs font-semibold bg-brand-500 text-white">
                                                         new
                                                     </span>
                                                 @endif
