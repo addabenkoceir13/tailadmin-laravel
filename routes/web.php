@@ -13,7 +13,7 @@ Route::get('/language/{lang}', function ($lang) {
 })->name('language.switch');
 
 // dashboard pages
-Route::get('/', function () {
+Route::get('/dashboard', function () {
     return view('pages.dashboard.ecommerce', ['title' => 'E-commerce Dashboard']);
 })->name('dashboard');
 
