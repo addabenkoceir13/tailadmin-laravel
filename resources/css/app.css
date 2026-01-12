@@ -10,6 +10,7 @@
 
 
 @custom-variant dark (&:is(.dark *));
+@custom-variant rtl (&:is([dir='rtl'] *));
 
 @theme {
   --font-*: initial;
@@ -190,6 +191,16 @@
   }
   body {
     @apply relative font-normal font-outfit z-1 bg-gray-50;
+  }
+
+  [dir='rtl'] body {
+    direction: rtl;
+  }
+
+  [dir='rtl'] input,
+  [dir='rtl'] textarea,
+  [dir='rtl'] select {
+    text-align: right;
   }
 }
 
